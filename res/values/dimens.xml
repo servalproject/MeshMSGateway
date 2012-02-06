@@ -19,17 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  -->
 <resources>
-    <!--  main activity -->
-    <string name="main_ui_lbl_info">The Serval MeshMS Gateway is designed to relay MeshMS messages out of, and into, a Serval Project mesh network</string>
-    <string name="main_ui_lbl_status">Status</string>
-    <string name="main_ui_lbl_status_in">Messages In: </string>
-    <string name="main_ui_lbl_status_out">Messages Out: </string>
-    <string name="main_ui_btn_settings">Settings</string>
-    <string name="main_ui_btn_start">Start the Service</string>
-    <string name="main_ui_btn_stop">Stop the Service</string>
-
-    <!-- system strings -->
-    <string name="system_application_name_full">Serval Project MeshMS Gateway</string>
-    <string name="system_application_name_short">MeshMS Gateway</string>
-
+    <dimen name="ui_elem_margin_top">10sp</dimen>
+    <dimen name="ui_elem_margin_bottom">10sp</dimen>
+    <dimen name="ui_elem_margin_left">5sp</dimen>
+    <dimen name="ui_elem_margin_right">5sp</dimen>
 </resources>
