@@ -37,6 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".RelayNumbers"></activity>
+        <provider android:authorities="@string/system_provider_authority" android:name=".provider.GatewayItems" android:exported="false"></provider>
     </application>
 
 </manifest>

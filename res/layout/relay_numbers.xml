@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/relay_numbers_ui_lbl_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/relay_numbers_ui_lbl_heading"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/relay_numbers_ui_lbl_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/relay_numbers_ui_lbl_info" />
+
+    <ListView
+        android:id="@+id/relay_numbers_ui_list_numbers"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:layout_weight="1.0" >
+
+    </ListView>
+
+     <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/relay_numbers_ui_btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+       			android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:layout_weight="1.0"
+                android:text="@string/relay_numbers_ui_btn_add" />
+
+            <Button
+                android:id="@+id/relay_numbers_ui_btn_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:layout_weight="1.0"
+                android:text="@string/relay_numbers_ui_btn_delete" />
+        </LinearLayout>
+
+</LinearLayout>

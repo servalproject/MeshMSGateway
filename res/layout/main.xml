@@ -91,6 +91,13 @@
                 android:layout_marginLeft="@dimen/ui_elem_margin_left"
                 android:layout_marginRight="@dimen/ui_elem_margin_right"
                 android:text="@string/main_ui_lbl_status_in" />
+
+            <TextView
+                android:id="@+id/main_ui_lbl_status_in_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_ui_lbl_status_in_count" />
+
         </TableRow>
 
         <TableRow
@@ -105,6 +112,12 @@
                 android:layout_marginLeft="@dimen/ui_elem_margin_left"
                 android:layout_marginRight="@dimen/ui_elem_margin_right"
                 android:text="@string/main_ui_lbl_status_out" />
+
+            <TextView
+                android:id="@+id/main_ui_lbl_status_out_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_ui_lbl_status_out_count" />
 
         </TableRow>
     </TableLayout>

@@ -20,13 +20,50 @@
 package org.servalproject.meshms.gateway;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class MainActivity extends Activity {
-    /** Called when the activity is first created. */
+public class MainActivity extends Activity implements OnClickListener {
+	
+	// private class level constants
+	private final String TAG = "MainActivity";
+    
+	/*
+	 * layout the controls on the activity
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        Button mButton = (Button) findViewById(R.id.main_ui_btn_settings);
+        mButton.setOnClickListener(this);
     }
+    
+    /*
+     * determine what was clicked on
+     * 
+     * (non-Javadoc)
+     * @see android.view.View.OnClickListener#onClick(android.view.View)
+     */
+	@Override
+	public void onClick(View view) {
+		// determine which view was touched
+		switch(view.getId()) {
+		case R.id.main_ui_btn_settings:
+			// the settings button was clicked
+			Intent mIntent = new Intent(this, org.servalproject.meshms.gateway.RelayNumbers.class);
+			startActivityForResult(mIntent, 0);
+			break;
+		default:
+			Log.w(TAG, "unknown view fired a click event");
+		}
+	}
 }

@@ -24,12 +24,38 @@
     <string name="main_ui_lbl_status">Status</string>
     <string name="main_ui_lbl_status_in">Messages In: </string>
     <string name="main_ui_lbl_status_out">Messages Out: </string>
+    <string name="main_ui_lbl_status_in_count">0</string>
+    <string name="main_ui_lbl_status_out_count">0</string>
     <string name="main_ui_btn_settings">Settings</string>
     <string name="main_ui_btn_start">Start the Service</string>
     <string name="main_ui_btn_stop">Stop the Service</string>
+    
+    <!-- relay numbers activity -->
+    <string name="relay_numbers_ui_lbl_heading">Relay Contacts</string>
+    <string name="relay_numbers_ui_lbl_info">The list of contacts below will have messages relayed via the MeshMS gateway</string>
+    
+    <string name="relay_numbers_ui_btn_add">Add Contact</string>
+    <string name="relay_numbers_ui_btn_delete">Delete Contact</string>
+    <string name="relay_numbers_ui_btn_back">Back</string>
+    
+    <string name="relay_numbers_ui_dialog_new_contact_title">New Contact</string>
+    <string name="relay_numbers_ui_dialog_new_contact_message">Enter a new contact number</string>
+    
+    <string name="relay_numbers_ui_toast_save_success">New contact saved</string>
+    <string name="relay_numbers_ui_toast_save_failed">The new contact could not be saved</string>
+    <string name="relay_numbers_ui_toast_invalid">The contact number must be numeric</string>
+    <string name="relay_numbers_ui_toast_select_before_delete">Select a contact for deletion</string>
+    <string name="relay_numbers_ui_toast_delete_sucess">Contact deleted</string>
+    <string name="relay_numbers_ui_toast_delete_failed">The contact could not be deleted</string>
+    
 
     <!-- system strings -->
     <string name="system_application_name_full">Serval Project MeshMS Gateway</string>
     <string name="system_application_name_short">MeshMS Gateway</string>
+    <string name="system_provider_authority">org.servalproject.meshms.gateway.provider.items</string>
+    
+    <!--  misc strings -->
+    <string name="misc_dialog_save_button">Save</string>
+    <string name="misc_dialog_cancel_button">Cancel</string>
 
 </resources>
