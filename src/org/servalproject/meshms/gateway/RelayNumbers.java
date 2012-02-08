@@ -78,7 +78,6 @@ public class RelayNumbers extends Activity implements OnClickListener {
         startManagingCursor(mCursor);
         
         SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, 
-        		//android.R.layout.simple_list_item_1,
         		android.R.layout.simple_list_item_single_choice,
         		mCursor,
         		new String[] {GatewayItemsContract.Contacts.Table.PHONE_NUMBER},
@@ -91,7 +90,6 @@ public class RelayNumbers extends Activity implements OnClickListener {
         // capture touches on the listview
         contactList.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        		// When clicked, show a toast with the TextView text
         		// store the selected contact for later
         		TextView textView = (TextView) view;
         		contactToDelete = textView.getText().toString();
