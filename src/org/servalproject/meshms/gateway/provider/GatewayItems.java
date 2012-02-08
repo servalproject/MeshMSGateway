@@ -40,6 +40,9 @@ public class GatewayItems extends ContentProvider {
 	private final int CONTACTS_LIST_URI = 0;
 	private final int CONTACTS_ITEM_URI = 1;
 	
+	private final int MESSAGES_LIST_URI = 2;
+	private final int MESSAGES_ITEM_URI = 3;
+	
 	private final String TAG = "GatewayItems";
 	
 	// class level variables
@@ -56,6 +59,9 @@ public class GatewayItems extends ContentProvider {
 		// define the URIs that we'll match against
 		uriMatcher.addURI(GatewayItemsContract.AUTHORITY, GatewayItemsContract.Contacts.CONTENT_URI_PATH, CONTACTS_LIST_URI);
 		uriMatcher.addURI(GatewayItemsContract.AUTHORITY, GatewayItemsContract.Contacts.CONTENT_URI_PATH + "/#", CONTACTS_ITEM_URI);
+		
+		uriMatcher.addURI(GatewayItemsContract.AUTHORITY, GatewayItemsContract.Messages.CONTENT_URI_PATH, MESSAGES_LIST_URI);
+		uriMatcher.addURI(GatewayItemsContract.AUTHORITY, GatewayItemsContract.Messages.CONTENT_URI_PATH + "/#", MESSAGES_ITEM_URI);
 		
 		databaseHelper = new GatewayDatabaseHelper(getContext());
 		
@@ -85,6 +91,19 @@ public class GatewayItems extends ContentProvider {
 				selection = GatewayItemsContract.Contacts.Table._ID + " = " + uri.getPathSegments().get(1);
 			} else {
 				selection = GatewayItemsContract.Contacts.Table._ID + " = " + uri.getPathSegments().get(1) + " AND (" + selection + ")";
+			}
+			break;
+		case MESSAGES_LIST_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			break;
+		case MESSAGES_ITEM_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			
+			// ammend the where clause if required
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = GatewayItemsContract.Messages.Table._ID + " = " + uri.getPathSegments().get(1);
+			} else {
+				selection = GatewayItemsContract.Messages.Table._ID + " = " + uri.getPathSegments().get(1) + " AND (" + selection + ")";
 			}
 			break;
 		default:
@@ -118,6 +137,10 @@ public class GatewayItems extends ContentProvider {
 			return GatewayItemsContract.Contacts.CONTENT_TYPE_LIST;
 		case CONTACTS_ITEM_URI:
 			return GatewayItemsContract.Contacts.CONTENT_TYPE_ITEM;
+		case MESSAGES_LIST_URI:
+			return GatewayItemsContract.Messages.CONTENT_TYPE_LIST;
+		case MESSAGES_ITEM_URI:
+			return GatewayItemsContract.Messages.CONTENT_TYPE_ITEM;
 		default:
 			// unknown uri found
 			Log.e(TAG, "unknown URI detected on getType: " + uri.toString());
@@ -141,6 +164,10 @@ public class GatewayItems extends ContentProvider {
 		case CONTACTS_LIST_URI:
 			mTable = GatewayItemsContract.Contacts.Table.TABLE_NAME;
 			mContentUri = GatewayItemsContract.Contacts.CONTENT_URI;
+			break;
+		case MESSAGES_LIST_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			mContentUri = GatewayItemsContract.Messages.CONTENT_URI;
 			break;
 		default:
 			// unknown uri found
@@ -184,6 +211,19 @@ public class GatewayItems extends ContentProvider {
 				selection = GatewayItemsContract.Contacts.Table._ID + " = " + uri.getPathSegments().get(1) + " AND (" + selection + ")";
 			}
 			break;
+		case MESSAGES_LIST_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			break;
+		case MESSAGES_ITEM_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			
+			// ammend the where clause if required
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = GatewayItemsContract.Messages.Table._ID + " = " + uri.getPathSegments().get(1);
+			} else {
+				selection = GatewayItemsContract.Messages.Table._ID + " = " + uri.getPathSegments().get(1) + " AND (" + selection + ")";
+			}
+			break;
 		default:
 			// unknown uri found
 			Log.e(TAG, "invalid URI detected for query: " + uri.toString());
@@ -219,6 +259,19 @@ public class GatewayItems extends ContentProvider {
 				selection = GatewayItemsContract.Contacts.Table._ID + " = " + uri.getPathSegments().get(1);
 			} else {
 				selection = GatewayItemsContract.Contacts.Table._ID + " = " + uri.getPathSegments().get(1) + " AND (" + selection + ")";
+			}
+			break;
+		case MESSAGES_LIST_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			break;
+		case MESSAGES_ITEM_URI:
+			mTable = GatewayItemsContract.Messages.Table.TABLE_NAME;
+			
+			// ammend the where clause if required
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = GatewayItemsContract.Messages.Table._ID + " = " + uri.getPathSegments().get(1);
+			} else {
+				selection = GatewayItemsContract.Messages.Table._ID + " = " + uri.getPathSegments().get(1) + " AND (" + selection + ")";
 			}
 			break;
 		default:

@@ -20,6 +20,8 @@
 package org.servalproject.meshms.gateway;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,6 +47,16 @@ public class MainActivity extends Activity implements OnClickListener {
         
         Button mButton = (Button) findViewById(R.id.main_ui_btn_settings);
         mButton.setOnClickListener(this);
+        
+        mButton = (Button) findViewById(R.id.main_ui_btn_start_stop);
+        mButton.setOnClickListener(this);
+        
+        // adjust the text of the button if required
+        if(isMyServiceRunning() == true) {
+        	mButton.setText(R.string.main_ui_btn_stop);
+        } else {
+        	mButton.setText(R.string.main_ui_btn_start);
+        }
     }
     
     /*
@@ -55,15 +67,50 @@ public class MainActivity extends Activity implements OnClickListener {
      */
 	@Override
 	public void onClick(View view) {
+		
+		Intent mIntent;
+		
 		// determine which view was touched
 		switch(view.getId()) {
 		case R.id.main_ui_btn_settings:
 			// the settings button was clicked
-			Intent mIntent = new Intent(this, org.servalproject.meshms.gateway.RelayNumbers.class);
+			mIntent = new Intent(this, org.servalproject.meshms.gateway.RelayNumbers.class);
 			startActivityForResult(mIntent, 0);
+			break;
+		case R.id.main_ui_btn_start_stop:
+			mIntent = new Intent(this, org.servalproject.meshms.gateway.services.CoreService.class);
+			
+			if(isMyServiceRunning() == false) {
+				startService(mIntent);
+				
+				Button mButton = (Button) findViewById(R.id.main_ui_btn_start_stop);
+		        mButton.setText(R.string.main_ui_btn_stop);
+			} else {
+				stopService(mIntent);
+				
+				Button mButton = (Button) findViewById(R.id.main_ui_btn_start_stop);
+		        mButton.setText(R.string.main_ui_btn_start);
+			}
+			
 			break;
 		default:
 			Log.w(TAG, "unknown view fired a click event");
 		}
+	}
+	
+	/*
+	 * check to see if the service is running
+	 * this code is based on the code available at the URL below
+	 * which is considered to be in the public domain
+	 * http://stackoverflow.com/questions/600207/android-check-if-a-service-is-running
+	 */
+	private boolean isMyServiceRunning() {
+	    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (org.servalproject.meshms.gateway.services.CoreService.class.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 }

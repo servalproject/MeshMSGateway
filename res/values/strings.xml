@@ -47,12 +47,15 @@
     <string name="relay_numbers_ui_toast_select_before_delete">Select a contact for deletion</string>
     <string name="relay_numbers_ui_toast_delete_sucess">Contact deleted</string>
     <string name="relay_numbers_ui_toast_delete_failed">The contact could not be deleted</string>
-    
 
     <!-- system strings -->
     <string name="system_application_name_full">Serval Project MeshMS Gateway</string>
     <string name="system_application_name_short">MeshMS Gateway</string>
     <string name="system_provider_authority">org.servalproject.meshms.gateway.provider.items</string>
+    
+    <string name="system_notification_ticker_text">Serval MeshMS Gateway is Running</string>
+    <string name="system_notification_title">Serval MeshMS Gateway</string>
+    <string name="system_notification_content">Serval MeshMS Gateway is running and relaying messages</string>
     
     <!--  misc strings -->
     <string name="misc_dialog_save_button">Save</string>

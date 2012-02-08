@@ -24,6 +24,8 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="8" />
+    
+    <uses-permission android:name="org.servalproject.meshms.RECEIVE_BROADCASTS"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -38,7 +40,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".RelayNumbers"></activity>
-        <provider android:authorities="@string/system_provider_authority" android:name=".provider.GatewayItems" android:exported="false"></provider>
+        <provider android:authorities="@string/system_provider_authority" 
+            android:name=".provider.GatewayItems" 
+            android:exported="false"></provider>
+        <service android:name=".services.CoreService"></service>
     </application>
 
 </manifest>
