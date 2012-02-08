@@ -111,6 +111,16 @@ public class GatewayItemsContract {
 		public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd." + AUTHORITY + "." + CONTENT_URI_PATH;
 		
 		/**
+		 * constant that defines the truncated message flag
+		 */
+		public static final int IS_TRUNCATED_FLAG = 1;
+		
+		/**
+		 * constant that defines the non-truncated message flag
+		 */
+		public static final int IS_NOT_TRUNCATED_FLAG = 0;
+		
+		/**
 		 * table definition
 		 */
 		public static final class Table implements BaseColumns {
@@ -139,6 +149,12 @@ public class GatewayItemsContract {
 			 * content of the message
 			 */
 			public static final String CONTENT = "content";
+			
+			/**
+			 * flag to indicate if the message was truncated when sent
+			 * over the gateway
+			 */
+			public static final String TRUNCATED = "truncated";
 			
 			/**
 			 * timestamp of the message
