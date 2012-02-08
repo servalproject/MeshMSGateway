@@ -84,4 +84,86 @@ public class GatewayItemsContract {
 			public static final String[] COLUMNS = {_ID, PHONE_NUMBER};
 		}
 	}
+	
+	/**
+	 * meta data for the messages table
+	 */
+	public static final class Messages {
+		
+		/**
+		 * path component of the URI
+		 */
+		public static final String CONTENT_URI_PATH = "messages";
+		
+		/**
+		 * content URI for the contacts data
+		 */
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		
+		/**
+		 * content type for a list of items
+		 */
+		public static final String CONTENT_TYPE_LIST = "vnd.android.cursor.dir/vnd." + AUTHORITY + "." + CONTENT_URI_PATH;
+		
+		/**
+		 * content type for an individual item
+		 */
+		public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd." + AUTHORITY + "." + CONTENT_URI_PATH;
+		
+		/**
+		 * table definition
+		 */
+		public static final class Table implements BaseColumns {
+			
+			/**
+			 * table name
+			 */
+			public static final String TABLE_NAME = Messages.CONTENT_URI_PATH;
+			
+			/**
+			 * unique id column
+			 */
+			public static final String _ID = BaseColumns._ID;
+			
+			/**
+			 * sender phone number 
+			 */
+			public static final String SENDER = "sender";
+			
+			/**
+			 * recipient phone number
+			 */
+			public static final String RECIPIENT = "recipient";
+			
+			/**
+			 * content of the message
+			 */
+			public static final String CONTENT = "content";
+			
+			/**
+			 * timestamp of the message
+			 */
+			public static final String TIMESTAMP = "timestamp";
+			
+			/**
+			 * connector used to send / receive the message
+			 */
+			public static final String CONNECTOR = "connector";
+			
+			/**
+			 * connector specific status of the message
+			 */
+			public static final String STATUS = "status";
+			
+			/**
+			 * md5 hash of the message content
+			 */
+			public static final String MD5_HASH = "md5_hash";
+			
+			/**
+			 * a list of all of the columns
+			 */
+			public static final String[] COLUMNS = {_ID, SENDER, RECIPIENT, CONTENT, TIMESTAMP, STATUS, CONNECTOR, MD5_HASH};
+		}	
+	}
 }
