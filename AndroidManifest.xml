@@ -26,6 +26,7 @@
     <uses-sdk android:minSdkVersion="8" />
     
     <uses-permission android:name="org.servalproject.meshms.RECEIVE_BROADCASTS"/>
+    <uses-permission android:name="org.servalproject.meshms.SEND_MESHMS"/>
 
     <application
         android:icon="@drawable/ic_launcher"

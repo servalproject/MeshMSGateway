@@ -23,6 +23,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.servalproject.meshms.SimpleMeshMS;
+import org.servalproject.meshms.gateway.R;
+import org.servalproject.meshms.gateway.connectors.InReachConnector;
 import org.servalproject.meshms.gateway.provider.GatewayItemsContract;
 
 import android.content.BroadcastReceiver;
@@ -44,10 +46,10 @@ public class IncomingMeshMS extends BroadcastReceiver {
 	private final boolean V_LOG = true;
 	private final String TAG = "IncomingMeshMS";
 	
-	private final int INREACH_MAX_LENGTH = 160;
-	
 	// class level variables
 	private ContentResolver contentResolver;
+	
+	private Context context;
 
 	/*
 	 * (non-Javadoc)
@@ -64,6 +66,8 @@ public class IncomingMeshMS extends BroadcastReceiver {
 			
 			// get a content resolver for all of the DB work ahead
 			contentResolver = context.getContentResolver();
+			
+			this.context = context;
 			
 			// check to see if relaying is allowed for this recipient
 			if(isRelayAllowed(mMessage.getRecipient()) == false) {
@@ -103,14 +107,19 @@ public class IncomingMeshMS extends BroadcastReceiver {
 			}
 			
 			// reformat the message
+			String mOldMessageContent = mMessage.getContent();
 			mMessage.setContent(reformatContent(mMessage));
 			
-			// check to see if the message now too long
-			if(mMessage.getContent().length() > INREACH_MAX_LENGTH) {
-				//TODO should we indicated truncation some how?
-				String mContent = mMessage.getContent();
-				mContent = mContent.substring(0, INREACH_MAX_LENGTH);
-				Log.w(TAG, "message with id '" + mId + "' exceeded length limit of '" + INREACH_MAX_LENGTH + "' and was truncated");
+			// truncate the message if required
+			if(truncateMessage(mMessage, InReachConnector.MAX_MESSAGE_LENGTH, InReachConnector.TRUNCATED_MESSAGE_INDICATOR) == true) {
+	
+				Log.w(TAG, "message with id '" + mId + "' exceeded length limit of '" + InReachConnector.MAX_MESSAGE_LENGTH + "' and was truncated");
+				
+				// send a reply
+				sendReply(mMessage.getSender(), mMessage.getRecipient(), mOldMessageContent, InReachConnector.MAX_MESSAGE_LENGTH);
+				
+				// update the record
+				updateRecordTruncated(mId);
 			}
 			
 			// send the message
@@ -246,7 +255,7 @@ public class IncomingMeshMS extends BroadcastReceiver {
 		mValues.put(GatewayItemsContract.Messages.Table.RECIPIENT, message.getRecipient());
 		mValues.put(GatewayItemsContract.Messages.Table.CONTENT, message.getContent());
 		mValues.put(GatewayItemsContract.Messages.Table.TIMESTAMP, message.getTimestamp());
-		mValues.put(GatewayItemsContract.Messages.Table.CONNECTOR, "inReach"); //TODO update to use constants class
+		mValues.put(GatewayItemsContract.Messages.Table.CONNECTOR, InReachConnector.CONNECTOR_NAME); //TODO update to use constants class
 		mValues.put(GatewayItemsContract.Messages.Table.MD5_HASH, md5hash);
 		
 		// save the new record
@@ -276,5 +285,54 @@ public class IncomingMeshMS extends BroadcastReceiver {
 		return newContent;
 		
 	}
-}
 
+	// truncate the message if required
+	private boolean truncateMessage(SimpleMeshMS message, int maxLength, String indicator) {
+		
+		if(message.getContent().length() > maxLength) {
+			String mContent = message.getContent();
+			
+			int newLength = maxLength - indicator.length();
+			mContent = mContent.substring(0, newLength);
+			mContent = mContent + indicator;
+			
+			message.setContent(mContent);
+			
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// send a message indicating that the original message was truncated
+	private void sendReply(String sender, String recipient, String content, int maxLength) {
+		
+		// build the content of the reply
+		String mContent = String.format(context.getString(R.string.core_service_truncation_message), 
+				recipient,
+				content.substring(0, 15),
+				maxLength);
+		
+		SimpleMeshMS mReply = new SimpleMeshMS(sender, mContent);
+		
+		// create the intent
+		Intent mMeshMSIntent = new Intent("org.servalproject.meshms.SEND_MESHMS");
+
+		// add the SimpleMeshMS parcelable to the intent as an extra
+		mMeshMSIntent.putExtra("simple", mReply);
+
+		// send the intent
+		context.startService(mMeshMSIntent);
+	}
+
+	// private method to update a message log
+	private void updateRecordTruncated(int id) {
+		
+		ContentValues mValues = new ContentValues();
+		mValues.put(GatewayItemsContract.Messages.Table.TRUNCATED, GatewayItemsContract.Messages.IS_TRUNCATED_FLAG);
+		
+		Uri mUri = Uri.withAppendedPath(GatewayItemsContract.Messages.CONTENT_URI, Integer.toString(id)); 
+		
+		contentResolver.update(mUri, mValues, null, null);
+	}
+}
