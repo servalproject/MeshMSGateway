@@ -45,6 +45,7 @@ public class IncomingMeshMS extends BroadcastReceiver {
 	// class level constants
 	private final boolean V_LOG = true;
 	private final String TAG = "IncomingMeshMS";
+	private final boolean SKIP_DUPLICATE_CHECK = true;
 	
 	// class level variables
 	private ContentResolver contentResolver;
@@ -123,15 +124,15 @@ public class IncomingMeshMS extends BroadcastReceiver {
 			}
 			
 			// send the message
-			
-			
+			// TODO move this to the connector class
+			sendOutboundMessage(mMessage, mId);
 			
 			// process a simple message
-			Log.d(TAG, "simple message found");
-			Log.d(TAG, "sender: " + mMessage.getSender());
-			Log.d(TAG, "recipient: " + mMessage.getRecipient());
-			Log.d(TAG, "content: " + mMessage.getContent());
-			Log.d(TAG, "timestamp: " + mMessage.getTimestamp());
+//			Log.d(TAG, "simple message found");
+//			Log.d(TAG, "sender: " + mMessage.getSender());
+//			Log.d(TAG, "recipient: " + mMessage.getRecipient());
+//			Log.d(TAG, "content: " + mMessage.getContent());
+//			Log.d(TAG, "timestamp: " + mMessage.getTimestamp());
 			
 		} else {
 			// no message found
@@ -217,7 +218,10 @@ public class IncomingMeshMS extends BroadcastReceiver {
 
 	// check to see if this message is a duplicate
 	private boolean isDuplicate(String md5hash) {
-
+		
+		if(SKIP_DUPLICATE_CHECK) {
+			return false;
+		}
 		
 		boolean mReturn = false;
 		
@@ -334,5 +338,17 @@ public class IncomingMeshMS extends BroadcastReceiver {
 		Uri mUri = Uri.withAppendedPath(GatewayItemsContract.Messages.CONTENT_URI, Integer.toString(id)); 
 		
 		contentResolver.update(mUri, mValues, null, null);
+	}
+
+	// private method to send an outbound message
+	private void sendOutboundMessage(SimpleMeshMS message, int id) {
+		
+		// prepare the inReach Intent
+		Intent mOutgoingIntent = new Intent(context, org.servalproject.meshms.gateway.SendMessageActivity.class); // action
+		mOutgoingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		mOutgoingIntent.putExtra("message", message);
+		mOutgoingIntent.putExtra("id", id);
+		
+		context.startActivity(mOutgoingIntent);
 	}
 }

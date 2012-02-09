@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+     <TextView
+        android:id="@+id/send_message_ui_lbl_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:layout_marginTop="@dimen/ui_elem_margin_top"
+        android:text="@string/system_application_name_short"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+     <TextView
+         android:id="@+id/send_message_ui_lbl_message"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/send_message_ui_lbl_message"
+         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

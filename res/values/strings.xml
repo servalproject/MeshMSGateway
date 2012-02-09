@@ -48,6 +48,9 @@
     <string name="relay_numbers_ui_toast_delete_sucess">Contact deleted</string>
     <string name="relay_numbers_ui_toast_delete_failed">The contact could not be deleted</string>
     
+    <!-- send message activity -->
+	<string name="send_message_ui_lbl_message">Attempting to send a MeshMS message</string>
+    
     <!-- core service strings -->
     <string name="core_service_truncation_message">The message that you sent to \'%1$s\' that started \'%2$s\' exceeded %3$d characters and was truncated before relay by the MeshMSGateway</string>
 
