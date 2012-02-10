@@ -104,6 +104,7 @@ public class SendMessageActivity extends Activity {
 		}
 
 		// get the delorme intent message id
+		// TODO determine why the extra appears to be missing
 		long mDelormeId = -1;
 		if(data != null) {
 			mDelormeId = data.getLongExtra("com.delorme.intent.extra.MESSAGE_ID", -1);
