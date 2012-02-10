@@ -170,7 +170,6 @@ public class RelayNumbers extends Activity implements OnClickListener {
 			.setPositiveButton(R.string.misc_dialog_save_button, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					// add the new contact number
-					Log.v(TAG, "new contact number: " + mInput.getText().toString());
 					
 					if(TextUtils.isDigitsOnly(mInput.getText()) == false || TextUtils.isEmpty(mInput.getText())){
 						Toast.makeText(getApplicationContext(), R.string.relay_numbers_ui_toast_invalid, Toast.LENGTH_LONG).show();
