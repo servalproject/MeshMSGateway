@@ -111,14 +111,24 @@ public class GatewayItemsContract {
 		public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd." + AUTHORITY + "." + CONTENT_URI_PATH;
 		
 		/**
-		 * constant that defines the truncated message flag
+		 * indicates that a message has been truncated
 		 */
 		public static final int IS_TRUNCATED_FLAG = 1;
 		
 		/**
-		 * constant that defines the non-truncated message flag
+		 * indicates that a message has not been truncated
 		 */
 		public static final int IS_NOT_TRUNCATED_FLAG = 0;
+		
+		/**
+		 * indicates that a message has not been sent
+		 */
+		public static final int IS_NOT_SENT_FLAG = 0;
+		
+		/**
+		 * indicates that a message has been sent
+		 */
+		public static final int IS_SENT_FLAG = 1;
 		
 		/**
 		 * table definition
@@ -157,6 +167,11 @@ public class GatewayItemsContract {
 			public static final String TRUNCATED = "truncated";
 			
 			/**
+			 * truncated content of the message
+			 */
+			public static final String SENT_CONTENT = "sent_content";
+			
+			/**
 			 * timestamp of the message
 			 */
 			public static final String TIMESTAMP = "timestamp";
@@ -167,7 +182,7 @@ public class GatewayItemsContract {
 			public static final String CONNECTOR = "connector";
 			
 			/**
-			 * connector specific status of the message
+			 * status of the message
 			 */
 			public static final String STATUS = "status";
 			
@@ -179,7 +194,7 @@ public class GatewayItemsContract {
 			/**
 			 * a list of all of the columns
 			 */
-			public static final String[] COLUMNS = {_ID, SENDER, RECIPIENT, CONTENT, TIMESTAMP, STATUS, CONNECTOR, MD5_HASH};
+			public static final String[] COLUMNS = {_ID, SENDER, RECIPIENT, CONTENT, TRUNCATED, SENT_CONTENT, TIMESTAMP, STATUS, CONNECTOR, MD5_HASH};
 		}	
 	}
 }

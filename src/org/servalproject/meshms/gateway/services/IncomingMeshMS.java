@@ -119,9 +119,12 @@ public class IncomingMeshMS extends BroadcastReceiver {
 				// send a reply
 				sendReply(mMessage.getSender(), mMessage.getRecipient(), mOldMessageContent, InReachConnector.MAX_MESSAGE_LENGTH);
 				
-				// update the record
+				// update the record with the truncated flag
 				updateRecordTruncated(mId);
 			}
+			
+			// update the record with the sent content
+			updateRecordSentContent(mId, mMessage.getContent());
 			
 			// send the message
 			// TODO move this to the connector class
@@ -334,6 +337,17 @@ public class IncomingMeshMS extends BroadcastReceiver {
 		
 		ContentValues mValues = new ContentValues();
 		mValues.put(GatewayItemsContract.Messages.Table.TRUNCATED, GatewayItemsContract.Messages.IS_TRUNCATED_FLAG);
+		
+		Uri mUri = Uri.withAppendedPath(GatewayItemsContract.Messages.CONTENT_URI, Integer.toString(id)); 
+		
+		contentResolver.update(mUri, mValues, null, null);
+	}
+	
+	// private method to update the record with the sent content
+	private void updateRecordSentContent(int id, String content) {
+		
+		ContentValues mValues = new ContentValues();
+		mValues.put(GatewayItemsContract.Messages.Table.SENT_CONTENT, content);
 		
 		Uri mUri = Uri.withAppendedPath(GatewayItemsContract.Messages.CONTENT_URI, Integer.toString(id)); 
 		

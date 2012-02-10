@@ -41,14 +41,20 @@ public class GatewayDatabaseHelper extends SQLiteOpenHelper {
 			+ GatewayItemsContract.Messages.Table.RECIPIENT + " TEXT, "
 			+ GatewayItemsContract.Messages.Table.CONTENT + " TEXT, "
 			+ GatewayItemsContract.Messages.Table.TRUNCATED + " INTEGER DEFAULT " + GatewayItemsContract.Messages.IS_NOT_TRUNCATED_FLAG + ", "
+			+ GatewayItemsContract.Messages.Table.SENT_CONTENT + " TEXT, "
 			+ GatewayItemsContract.Messages.Table.TIMESTAMP + " INTEGER, "
 			+ GatewayItemsContract.Messages.Table.CONNECTOR + " INTEGER, "
-			+ GatewayItemsContract.Messages.Table.STATUS + " INTEGER, "
+			+ GatewayItemsContract.Messages.Table.STATUS + " INTEGER DEFAULT " + GatewayItemsContract.Messages.IS_NOT_SENT_FLAG + ", "
 			+ GatewayItemsContract.Messages.Table.MD5_HASH + " TEXT)";
 	
-	private final String MESSAGES_INDEX = "CREATE INDEX messages_md5hash ON "
+	private final String MESSAGES_MD5_INDEX = "CREATE INDEX messages_md5hash ON "
 			+ GatewayItemsContract.Messages.Table.TABLE_NAME + " ("
 			+ GatewayItemsContract.Messages.Table.MD5_HASH + ")";
+	
+	private final String MESSAGES_CONTENT_INDEX = "CREATE INDEX content_index ON "
+			+ GatewayItemsContract.Messages.Table.TABLE_NAME + " ("
+			+ GatewayItemsContract.Messages.Table.RECIPIENT + ", "
+			+ GatewayItemsContract.Messages.Table.SENT_CONTENT + ")";
 	
 	public GatewayDatabaseHelper(Context context) {
 		// context, database name, factory, db version
@@ -63,7 +69,8 @@ public class GatewayDatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL(MESSAGES_CREATE);
 		
 		// create additional indexes
-		db.execSQL(MESSAGES_INDEX);
+		db.execSQL(MESSAGES_MD5_INDEX);
+		db.execSQL(MESSAGES_CONTENT_INDEX);
 
 	}
 

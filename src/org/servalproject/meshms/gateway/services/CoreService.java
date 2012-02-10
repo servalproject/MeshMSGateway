@@ -44,6 +44,7 @@ public class CoreService extends Service {
 	
 	// class level variables
 	private IncomingMeshMS incomingMeshMS;
+	private IncomingInReachMessages incomingInReachMessages;
 	
 	/*
 	 * called when the service is created
@@ -80,6 +81,12 @@ public class CoreService extends Service {
 		mIntentFilter.addAction("org.servalproject.meshms.RECEIVE_BROADCASTS");
 		incomingMeshMS = new IncomingMeshMS();
 		registerReceiver(incomingMeshMS, mIntentFilter);
+		
+		mIntentFilter = new IntentFilter();
+		mIntentFilter.addAction("com.delorme.intent.action.MESSAGE_RECEIVED");
+		mIntentFilter.addAction("com.delorme.intent.action.MESSAGE_SENT");
+		incomingInReachMessages = new IncomingInReachMessages();
+		registerReceiver(incomingInReachMessages, mIntentFilter);
 		
 		// If service gets killed, after returning from here, restart
 	    return START_STICKY;	
@@ -136,6 +143,7 @@ public class CoreService extends Service {
 		
 		// unregister the receiver
 		unregisterReceiver(incomingMeshMS);
+		unregisterReceiver(incomingInReachMessages);
 		
 		super.onDestroy();
 		
