@@ -104,11 +104,30 @@ public class SendMessageActivity extends Activity {
 		}
 
 		// get the delorme intent message id
-		// TODO determine why the extra appears to be missing
+		// TODO report bug in Delorme earthmate missing intent. 
 		long mDelormeId = -1;
 		if(data != null) {
 			mDelormeId = data.getLongExtra("com.delorme.intent.extra.MESSAGE_ID", -1);
 		}
+		
+		//debug code
+//		if(data != null) {
+//			if(data.getExtras() != null) {
+//				if(data.getExtras().keySet() == null) {
+//					String[] keys = data.getExtras().keySet().toArray(new String[0]);
+//					
+//					for(String key : keys) {
+//						Log.v(TAG, "bundle key: " + key);
+//					}
+//				} else {
+//					Log.v(TAG, "no extras keys found attached to the intent");
+//				}
+//			} else {
+//				Log.v(TAG, "no extras found attached to the intent");
+//			}
+//		} else {
+//			Log.v(TAG, "no intent found in method call");
+//		}
 
 		// determine what action to take
 		switch(resultCode) {
@@ -119,5 +138,7 @@ public class SendMessageActivity extends Activity {
 			// message was not sent
 			Log.w(TAG, "the relay of the MeshMS via inReach has resulted in code'" + resultCode + "'");
 		}
+		
+		finish();
 	}
 }

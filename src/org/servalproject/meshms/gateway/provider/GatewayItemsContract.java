@@ -131,6 +131,11 @@ public class GatewayItemsContract {
 		public static final int IS_SENT_FLAG = 1;
 		
 		/**
+		 * indicates that a message has been received
+		 */
+		public static final int IS_RECEIVED_FLAG = 2;
+		
+		/**
 		 * table definition
 		 */
 		public static final class Table implements BaseColumns {

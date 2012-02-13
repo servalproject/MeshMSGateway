@@ -19,6 +19,8 @@
  */
 package org.servalproject.meshms.gateway.services;
 
+import org.servalproject.meshms.SimpleMeshMS;
+import org.servalproject.meshms.gateway.connectors.InReachConnector;
 import org.servalproject.meshms.gateway.provider.GatewayItemsContract;
 
 import android.content.BroadcastReceiver;
@@ -40,6 +42,8 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 	private boolean V_LOG = true;
 	private final String TAG = "IncomingInReachMessages";
 	
+	private final String MESSAGE_DELIM = "-";
+	
 	// private class level variables
 	private Context context;
 
@@ -51,7 +55,7 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		
 		if(V_LOG) {
-			Log.v(TAG, "new intent from inReach received");
+			Log.v(TAG, "new intent from inReach received: " + intent.getAction());
 		}
 		
 		this.context = context;
@@ -65,16 +69,73 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 		}
 	}
 	
+	// process the notification of a new message being received
 	private void processNewMessage(long messageId) {
 		if(messageId == -1) {
 			Log.e(TAG, "missing message id in attempt to process new message");
 			return;
 		}
+		
 		if(V_LOG) {
 			Log.v(TAG, "processing a new message from satellite with id: " + messageId);
 		}
+		
+		// get the message details
+		String[] mDelormeMessage = getMessageDetails(messageId);
+		
+		if(mDelormeMessage == null) {
+			Log.e(TAG, "unable to retrieve message details for processing of sent message");
+			return;
+		}
+
+		ContentResolver mContentResolver = context.getContentResolver();
+		Cursor mCursor = null;
+		
+		// split the message into its component parts
+		String[] mMessageComponents = mDelormeMessage[1].split(MESSAGE_DELIM);
+		
+		// check to make sure the split was ok
+		if(mMessageComponents.length != 2) {
+			Log.e(TAG, "unable to continue processing message with delorme id '" + messageId + "' missing message delimiter");
+			return;
+		}
+		
+		// use strings for the parts
+		String mSender    = mDelormeMessage[0];
+		String mRecipient = mMessageComponents[0];
+		String mContent   = mMessageComponents[1];
+		
+		// munge the sender
+		mSender    = "555005005";
+		
+		// log the incoming messages
+		ContentValues mContentValues = new ContentValues();
+		mContentValues.put(GatewayItemsContract.Messages.Table.SENDER, mSender);
+		mContentValues.put(GatewayItemsContract.Messages.Table.RECIPIENT, mRecipient);
+		mContentValues.put(GatewayItemsContract.Messages.Table.CONTENT, mContent);
+		mContentValues.put(GatewayItemsContract.Messages.Table.CONNECTOR, InReachConnector.CONNECTOR_NAME);
+		mContentValues.put(GatewayItemsContract.Messages.Table.STATUS, GatewayItemsContract.Messages.IS_RECEIVED_FLAG);
+		mContentValues.put(GatewayItemsContract.Messages.Table.TIMESTAMP, System.currentTimeMillis());
+		
+		try {
+			
+			Uri newRecord = mContentResolver.insert(GatewayItemsContract.Messages.CONTENT_URI, mContentValues);
+			Log.i(TAG, "new message was successfully logged with id: " + newRecord.getLastPathSegment());
+			
+		} catch (SQLException e) {
+			Log.e(TAG, "unable to create a log of the recieved message with delorme id: " + messageId, e);
+		}
+		
+		// prepare a new message
+		SimpleMeshMS mMeshMS = new SimpleMeshMS(mSender, mRecipient, mContent);
+		
+		// send the message
+		Intent mIntent = new Intent("org.servalproject.meshms.SEND_MESHMS");
+		mIntent.putExtra("simple", mMeshMS);
+		context.startService(mIntent);
 	}
 	
+	// process the notification of a message being successfully sent
 	private void processSentMessage(long messageId) {
 		if(messageId == -1) {
 			Log.e(TAG, "missing message id in attempt to process sent message");
@@ -84,89 +145,34 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 			Log.v(TAG, "processing a sent message with id: " + messageId);
 		}
 		
-		/*
-		 *  get the data from the message store
-		 */
-		String[] mProjection = {"address_id", "message"};
+		// get the message details
+		String[] mDelormeMessage = getMessageDetails(messageId);
 		
+		if(mDelormeMessage == null) {
+			Log.e(TAG, "unable to retrieve message details for processing of sent message");
+			return;
+		}
+		
+
 		ContentResolver mContentResolver = context.getContentResolver();
 		Cursor mCursor = null;
-		
-		try{
-			mCursor = mContentResolver.query(Uri.parse("content://com.delorme.provider.earthmate.messages/messages/" + messageId),
-					mProjection,
-					null,
-					null,
-					null);
-		} catch(SQLException e) {
-			Log.e(TAG, "unable to query messages content provider", e);
-			return;
-		}
-		
-		// check to make sure something was returned
-		if(mCursor.getCount() == 0) {
-			Log.e(TAG, "unable to retrieve message data with id: " + messageId);
-			return;
-		}
-		
-		mCursor.moveToFirst();
-		
-		long mAddressId = mCursor.getLong(mCursor.getColumnIndex("address_id"));
-		String mContent = mCursor.getString(mCursor.getColumnIndex("message"));
-		
-		// debug code
-		Log.v(TAG, "address id: " + mAddressId);
-		Log.v(TAG, "message content: " + mContent);
-		
-		// play nice and tidy up
-		mCursor.close();
-		
-		/*
-		 *  get the address
-		 */
-		mProjection = new String[1];
-		mProjection[0] = "address";
-		
-		try{
-			mCursor = mContentResolver.query(Uri.parse("content://com.delorme.provider.earthmate.messages/recipients/" + mAddressId),
-					mProjection,
-					null,
-					null,
-					null);
-		} catch(SQLException e) {
-			Log.e(TAG, "unable to query addresses content provider", e);
-			return;
-		}
-		
-		if(mCursor.getCount() == 0) {
-			Log.e(TAG, "unable to retrieve address data with id: " + mAddressId);
-			return;
-		}
-		
-		mCursor.moveToFirst();
-		
-		String mAddress = mCursor.getString(mCursor.getColumnIndex("address"));
-		
-		mCursor.close();
-		
-		//debug code
-		Log.v(TAG, "addresses: " + mAddress);
-		
-		// debug code to munge the address
-		mAddress = "555001001";
 		
 		/*
 		 *  see if we can find a matching message
 		 */
-		mProjection = new String[1];
+		String[] mProjection = new String[1];
 		mProjection[0] = GatewayItemsContract.Messages.Table._ID;
 		
 		String mSelection = GatewayItemsContract.Messages.Table.RECIPIENT + " = ? AND "
 				+ GatewayItemsContract.Messages.Table.SENT_CONTENT + " = ?";
 		
 		String[] mSelectionArgs = new String[2];
-		mSelectionArgs[0] = mAddress;
-		mSelectionArgs[1] = mContent;
+		mSelectionArgs[0] = mDelormeMessage[0];
+		mSelectionArgs[1] = mDelormeMessage[1];
+		
+		//debug code
+		Log.v(TAG, "mSelectionArgs[0]: " + mSelectionArgs[0]);
+		Log.v(TAG, "mSelectionArgs[1]: " + mSelectionArgs[1]);
 		
 		try {
 			mCursor = mContentResolver.query(GatewayItemsContract.Messages.CONTENT_URI,
@@ -191,7 +197,9 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 		// play nice and tidy up
 		mCursor.close();
 		
-		Log.v(TAG, "gateway message id: " + mGatewayMessageId);
+		if(V_LOG) {
+			Log.v(TAG, "gateway message id: " + mGatewayMessageId);
+		}
 		
 		/*
 		 * update the gateway message with the sent flag
@@ -213,5 +221,89 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 		}
 		
 		Log.i(TAG, "message with id '" + mGatewayMessageId + "' has had its sent status updated");
+	}
+	
+	// private method to get the message details from the delorme content provider
+	private String[] getMessageDetails(long messageId) {
+		
+		/*
+		 *  get the data from the message store
+		 */
+		String[] mProjection = {"address_id", "message"};
+		
+		ContentResolver mContentResolver = context.getContentResolver();
+		Cursor mCursor = null;
+		
+		try{
+			mCursor = mContentResolver.query(Uri.parse("content://com.delorme.provider.earthmate.messages/messages/" + messageId),
+					mProjection,
+					null,
+					null,
+					null);
+		} catch(SQLException e) {
+			Log.e(TAG, "unable to query messages content provider", e);
+			return null;
+		}
+		
+		// check to make sure something was returned
+		if(mCursor.getCount() == 0) {
+			Log.e(TAG, "unable to retrieve message data with id: " + messageId);
+			return null;
+		}
+		
+		mCursor.moveToFirst();
+		
+		long mAddressId = mCursor.getLong(mCursor.getColumnIndex("address_id"));
+		String mContent = mCursor.getString(mCursor.getColumnIndex("message"));
+		
+		// debug code
+		if(V_LOG) {
+			Log.v(TAG, "address id: " + mAddressId);
+			Log.v(TAG, "message content: " + mContent);
+		}
+		
+		// play nice and tidy up
+		mCursor.close();
+		
+		/*
+		 *  get the address
+		 */
+		mProjection = new String[1];
+		mProjection[0] = "address";
+		
+		try{
+			mCursor = mContentResolver.query(Uri.parse("content://com.delorme.provider.earthmate.messages/recipients/" + mAddressId),
+					mProjection,
+					null,
+					null,
+					null);
+		} catch(SQLException e) {
+			Log.e(TAG, "unable to query addresses content provider", e);
+			return null;
+		}
+		
+		if(mCursor.getCount() == 0) {
+			Log.e(TAG, "unable to retrieve address data with id: " + mAddressId);
+			return null;
+		}
+		
+		mCursor.moveToFirst();
+		
+		String mAddress = mCursor.getString(mCursor.getColumnIndex("address"));
+		
+		mCursor.close();
+		
+		//debug code
+		if(V_LOG) {
+			Log.v(TAG, "addresses: " + mAddress);
+		}
+		// debug code to munge the address
+		mAddress = "555001001";
+		
+		String[] mReturn = new String[2];
+		mReturn[0] = mAddress;
+		mReturn[1] = mContent;
+		
+		return mReturn;
 	}
 }
