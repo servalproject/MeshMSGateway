@@ -36,6 +36,8 @@ public class SendMessageActivity extends Activity {
 
 	private final int ACTIVITY_RESULT_CODE = 0;
 	
+	final boolean ALLOW_EDIT = true;
+	
 	// declare delorme constants
 	private final int DELORME_MESSAGE_SENT = 0;
 
@@ -75,15 +77,12 @@ public class SendMessageActivity extends Activity {
 
 		// process the message
 
-		//debug values
-		String mDebugAddress = "corey@servalproject.org";
-		final boolean ALLOW_EDIT = true;
 
 		// prepare the inReach Intent
 		Intent mOutgoingIntent = new Intent("com.delorme.intent.action.SEND_MESSAGE"); // action
 		mOutgoingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_RECIPIENTS", mDebugAddress); // add recipient address
+		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_RECIPIENTS", mMessage.getRecipient()); // add recipient address
 		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_TEXT", mMessage.getContent()); // message content
 		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_EDIT_ONERROR", ALLOW_EDIT); // allow user to edit if delorme app detects and error
 

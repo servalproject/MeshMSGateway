@@ -45,7 +45,7 @@ public class IncomingMeshMS extends BroadcastReceiver {
 	// class level constants
 	private final boolean V_LOG = true;
 	private final String TAG = "IncomingMeshMS";
-	private final boolean SKIP_DUPLICATE_CHECK = true;
+	private final boolean SKIP_DUPLICATE_CHECK = false;
 	
 	// class level variables
 	private ContentResolver contentResolver;

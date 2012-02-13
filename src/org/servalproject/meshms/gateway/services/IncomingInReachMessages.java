@@ -42,7 +42,7 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 	private boolean V_LOG = true;
 	private final String TAG = "IncomingInReachMessages";
 	
-	private final String MESSAGE_DELIM = "-";
+	private final String MESSAGE_DELIM = "\n";
 	
 	// private class level variables
 	private Context context;
@@ -89,7 +89,7 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 		}
 
 		ContentResolver mContentResolver = context.getContentResolver();
-		Cursor mCursor = null;
+		//Cursor mCursor = null;
 		
 		// split the message into its component parts
 		String[] mMessageComponents = mDelormeMessage[1].split(MESSAGE_DELIM);
@@ -104,9 +104,6 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 		String mSender    = mDelormeMessage[0];
 		String mRecipient = mMessageComponents[0];
 		String mContent   = mMessageComponents[1];
-		
-		// munge the sender
-		mSender    = "555005005";
 		
 		// log the incoming messages
 		ContentValues mContentValues = new ContentValues();
@@ -297,8 +294,6 @@ public class IncomingInReachMessages extends BroadcastReceiver {
 		if(V_LOG) {
 			Log.v(TAG, "addresses: " + mAddress);
 		}
-		// debug code to munge the address
-		mAddress = "555001001";
 		
 		String[] mReturn = new String[2];
 		mReturn[0] = mAddress;
