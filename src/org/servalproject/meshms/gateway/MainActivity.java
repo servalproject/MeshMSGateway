@@ -19,20 +19,33 @@
  */
 package org.servalproject.meshms.gateway;
 
+import org.servalproject.meshms.gateway.provider.GatewayItemsContract;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 	
 	// private class level constants
 	private final String TAG = "MainActivity";
+	
+	// private class level variables
+	private Handler updateHandler = new Handler();
+	private int updateDelay = 10 * 1000;
+	
+	private TextView mReceivedCountView;
+	private TextView mSentCountView;
     
 	/*
 	 * layout the controls on the activity
@@ -51,13 +64,65 @@ public class MainActivity extends Activity implements OnClickListener {
         mButton = (Button) findViewById(R.id.main_ui_btn_start_stop);
         mButton.setOnClickListener(this);
         
+        mReceivedCountView = (TextView) findViewById(R.id.main_ui_lbl_status_in_count);
+        mSentCountView = (TextView) findViewById(R.id.main_ui_lbl_status_out_count);
+        
         // adjust the text of the button if required
         if(isMyServiceRunning() == true) {
         	mButton.setText(R.string.main_ui_btn_stop);
         } else {
         	mButton.setText(R.string.main_ui_btn_start);
         }
+        
+     // update the map without delay
+     updateHandler.post(updateTask);
+     
     }
+    
+    // runnable used to update the count
+    private Runnable updateTask = new Runnable() {
+    	
+    	public void run() {
+    	
+	    	// resolve the content uri
+	    	ContentResolver mContentResolver = getApplicationContext().getContentResolver();
+	    	
+	    	String[] mProjection = new String[1];
+	    	mProjection[0] = GatewayItemsContract.Messages.Table._ID;
+	    	
+	    	String   mSelection = GatewayItemsContract.Messages.Table.STATUS + " = ?";
+	    	String[] mSelectionArgs = new String[1];
+	    	
+	    	// get the received count
+	    	mSelectionArgs[0] = Integer.toString(GatewayItemsContract.Messages.IS_RECEIVED_FLAG);
+	    	
+	    	Cursor mCursor = mContentResolver.query(
+	    			GatewayItemsContract.Messages.CONTENT_URI, 
+	    			mProjection, 
+	    			mSelection, 
+	    			mSelectionArgs,
+	    			null);
+	    	
+	    	mReceivedCountView.setText(Integer.toString(mCursor.getCount()));
+	    	
+	    	mCursor.close();
+	    	
+	    	mSelectionArgs[0] = Integer.toString(GatewayItemsContract.Messages.IS_SENT_FLAG);
+	    	
+	    	mCursor = mContentResolver.query(
+	    			GatewayItemsContract.Messages.CONTENT_URI, 
+	    			mProjection, 
+	    			mSelection, 
+	    			mSelectionArgs,
+	    			null);
+	    	
+	    	mSentCountView.setText(Integer.toString(mCursor.getCount()));
+	    	
+	    	mCursor.close();
+	    	
+	    	updateHandler.postDelayed(updateTask, updateDelay);
+    	}
+    };
     
     /*
      * determine what was clicked on

@@ -77,11 +77,11 @@ public class SendMessageActivity extends Activity {
 
 		// process the message
 
-
 		// prepare the inReach Intent
 		Intent mOutgoingIntent = new Intent("com.delorme.intent.action.SEND_MESSAGE"); // action
 		mOutgoingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+		// override the recipient
 		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_RECIPIENTS", mMessage.getRecipient()); // add recipient address
 		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_TEXT", mMessage.getContent()); // message content
 		mOutgoingIntent.putExtra("com.delorme.intent.extra.MESSAGE_EDIT_ONERROR", ALLOW_EDIT); // allow user to edit if delorme app detects and error

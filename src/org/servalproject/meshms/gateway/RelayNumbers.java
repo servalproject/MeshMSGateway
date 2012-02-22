@@ -171,9 +171,18 @@ public class RelayNumbers extends Activity implements OnClickListener {
 				public void onClick(DialogInterface dialog, int id) {
 					// add the new contact number
 					
-					if(TextUtils.isDigitsOnly(mInput.getText()) == false || TextUtils.isEmpty(mInput.getText())){
+					if(TextUtils.isEmpty(mInput.getText()) == true) {
 						Toast.makeText(getApplicationContext(), R.string.relay_numbers_ui_toast_invalid, Toast.LENGTH_LONG).show();
 						return;
+					}
+					
+					if(TextUtils.isDigitsOnly(mInput.getText()) == false) {
+						String mPrefix = mInput.getText().toString().substring(0, 1);
+						String mRemainder = mInput.getText().toString().substring(1);
+						if(mPrefix.equals("+") == false && TextUtils.isDigitsOnly(mRemainder) == false) {
+							Toast.makeText(getApplicationContext(), R.string.relay_numbers_ui_toast_invalid, Toast.LENGTH_LONG).show();
+							return;
+						}
 					}
 					
 					// save the new phone number
